@@ -1,0 +1,92 @@
+\documentclass[12pt,a4paper]{letter}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{microtype}
+
+\signature{Robin}
+\address{}
+\date{13 May 2026}
+
+\begin{document}
+
+\begin{letter}{Professor Neil Ghani}
+
+\opening{Hi Neil,}
+
+I've been reading through some recent work on multi-agent LLM systems and thought you might find it interesting, given our conversations about hierarchical composition and coordination. Three pieces stood out:
+
+\bigskip
+\noindent\textbf{1.\quad SciAgent: A Unified Multi-Agent System for Generalistic Scientific Reasoning}\\
+\textit{arXiv:2511.08151} \quad\textemdash\quad \textit{Note: currently withdrawn pending revision}
+
+\smallskip
+SciAgent targets cross-disciplinary scientific reasoning at expert level. A \emph{Coordinator Agent} classifies the domain and difficulty of each problem, then dynamically assembles a \emph{Worker System} of sub-agents handling symbolic deduction, conceptual modelling, numerical computation, and verification. The claimed results were striking\textemdash gold-medalist level on the IMO, IPhO, IChO, and Humanity's Last Exam\textemdash but the paper has since been withdrawn by the authors pending further expert evaluation. I include it here as an interesting architecture sketch, not as a reliable empirical claim.
+
+\bigskip
+\noindent\textbf{2.\quad AgentOrchestra: A Hierarchical Multi-Agent Framework for General-Purpose Task Solving}\\
+\textit{arXiv:2506.12508}
+
+\smallskip
+AgentOrchestra is a two-tier framework targeting general task-solving rather than a specific domain. A \emph{Planning Agent} decomposes tasks and routes work to three specialists:
+\begin{itemize}
+  \item \emph{Deep Researcher} --- broad web information gathering
+  \item \emph{Browser Use Agent} --- precise web interaction and extraction
+  \item \emph{Deep Analyzer} --- multimodal reasoning over retrieved content
+\end{itemize}
+
+The design principles (extensibility, multimodality, modularity, coordination) are deliberately architectural rather than empirical. Results on standard benchmarks:
+
+\medskip
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Benchmark} & \textbf{AgentOrchestra} & \textbf{Previous SOTA} \\
+\midrule
+SimpleQA  & 95.3\%  & 93.9\% (Perplexity Deep Research) \\
+GAIA      & 82.42\% & 77.58\% (AWorld) \\
+HLE       & 25.9\%  & 20.3\% (o3) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+The HLE result in particular is interesting: 25.9\% vs 20.3\% for o3 is a meaningful jump on a benchmark designed to be extremely difficult.
+
+\bigskip
+\noindent\textbf{3.\quad Building a Multi-Agent Research System}\\
+\textit{Anthropic Engineering Blog, 2025}
+
+\smallskip
+Anthropic describe their own internal multi-agent research assistant. The architecture is an orchestrator--worker pattern: a lead \texttt{claude-opus-4} agent builds a dynamic research strategy and spawns 3--5 parallel \texttt{claude-sonnet-4} subagents, each with its own context window, doing web search and extended thinking. A separate citation agent handles attribution post-hoc.
+
+Key empirical findings:
+\begin{itemize}
+  \item Multi-agent (Opus lead + Sonnet workers) outperforms single-agent Opus by \textbf{90.2\%} on internal research evaluations
+  \item Parallel execution cut research time by up to \textbf{90\%} on complex queries
+  \item Token usage explains \textbf{80\%} of performance variance in browsing tasks
+  \item Improved tool descriptions alone reduced task completion time by \textbf{40\%}
+\end{itemize}
+
+The last point about token usage is the mechanistically interesting one: separate context windows per subagent function as parallel working memory. The performance gain is not purely about parallelism\textemdash it is about avoiding the degradation that comes from a single agent's context window filling up on a long multi-step task.
+
+\bigskip
+\noindent\textbf{Cross-cutting observation}
+
+All three systems land on the same architectural form: a coordinator plus specialised workers, assembled hierarchically. What varies is what the coordinator \emph{does}:
+\begin{itemize}
+  \item \emph{SciAgent}: classifies domain $\to$ selects reasoning modalities
+  \item \emph{AgentOrchestra}: decomposes task $\to$ routes to tool-appropriate specialists
+  \item \emph{Anthropic}: builds a dynamic research strategy $\to$ spawns parallel explorers without pre-committing to structure
+\end{itemize}
+
+There is something here that feels adjacent to what we have been thinking about with categorical composition: the coordinator is essentially choosing a \emph{morphism} in some category of task-decompositions, and the specialists are the component objects. The hierarchical structure is not just engineering convenience\textemdash it is doing real semantic work in determining what kind of reasoning gets applied where.
+
+I am curious whether you see a clean categorical account of the coordination problem. Seems like it could connect to your work on containers or polynomial functors.
+
+\closing{Best,}
+
+\end{letter}
+\end{document}
